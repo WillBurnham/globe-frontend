@@ -7,6 +7,7 @@ const Marker = ({ id,lat,lng,title }) => <div style={{fontSize:'20px'}}>{title}<
 
 export default function Map(){
     const [pins, setPins] = useState([]);
+    const [tempPins, setTempPins] = useState([]);
     const [coords, setCoords] = useState([0,0]);
     const [open, setOpen] = useState(false);
     const handleOpen = () => { setOpen(true) };
@@ -18,16 +19,27 @@ export default function Map(){
         },
         zoom: 6
     };
+    const handleModalCallBack = (data) => {
+      setTempPins(tempPins.concat(data));
+    }
     useEffect(() => {
         axios.get("http://192.168.1.228:8081/pins").then(res => {
-            setPins(res.data)
+            setPins(res.data);
         })
-    }, [])
+    }, []);
+    useEffect(() => {
+      if (tempPins.length > 0) {
+        if (pins.indexOf(tempPins[0]) === -1) {
+          setPins(pins.concat(tempPins));
+        }
+        else {
+          setTempPins([]);
+        }
+      }
+    }, [tempPins, pins]);
     const addPin = (ev) => {
         handleOpen();
         setCoords([ev.lat, ev.lng]);
-        console.log(ev.lat);
-        console.log(ev.lng);
     };
   return (
     <div style={{ height: '100vh', width: '100%' }}>
@@ -48,7 +60,13 @@ export default function Map(){
             ))
         }
       </GoogleMapReact>
-      <PinModal open={open} lat={coords[0]} lng={coords[1]} handleClose={handleClose}/>
+      <PinModal 
+        open={open}
+        lat={coords[0]}
+        lng={coords[1]}
+        handleClose={handleClose}
+        parentCallBack={handleModalCallBack}
+      />
     </div>
   );
 }

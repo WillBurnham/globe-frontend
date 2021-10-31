@@ -24,8 +24,8 @@ const PinModal = (props) => {
             lat: props.lat,
             lng: props.lng
         }
+        props.parentCallBack(pin);
         axios.post("http://192.168.1.228:8081/create-pin", pin)
-            .then(res => console.log(res))
             .then(
                 props.handleClose()
             );
