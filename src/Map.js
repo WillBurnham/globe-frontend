@@ -3,8 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import axios from "axios";
 import PinModal from "./Modal";
 import Pin from "./pin.png";
-
-const Marker = ({ id,lat,lng,title }) => <img src={Pin} height={30} width={30}/>;
+import styles from "./index.css";
 
 export default function Map(){
 
@@ -15,6 +14,14 @@ export default function Map(){
 
     const handleOpen = () => { setOpen(true) };
     const handleClose = () => { setOpen(false) };
+
+    const handlePinClicked = (e) => {
+      e.stopPropagation();
+      var obj = {body: "hello"};
+      alert(obj.body);
+    }
+
+    const Marker = ({ id,lat,lng,title }) => <button onClick={handlePinClicked} style={{backgroundColor:"transparent", border:"none"}}><img src={Pin} height={30} width={30}/></button>;
 
     const defaultProps = {
         center: {
@@ -28,7 +35,7 @@ export default function Map(){
 
     useEffect(() => {
         axios.get("http://192.168.1.228:8081/pins").then(res => {
-            setPins(res.data);
+          setPins(res.data);
         })
     }, []);
 
@@ -44,8 +51,8 @@ export default function Map(){
     }, [tempPins, pins]);
 
     const addPin = (ev) => {
-        handleOpen();
-        setCoords([ev.lat, ev.lng]);
+      handleOpen();
+      setCoords([ev.lat, ev.lng]);
     };
 
   return (
@@ -57,14 +64,14 @@ export default function Map(){
         onClick={addPin}
       >
         {
-            pins.map(pin => (
-                <Marker
-                    key={pin.id}
-                    lat={pin.lat}
-                    lng={pin.lng}
-                    title={pin.title}
-                />
-            ))
+          pins.map(pin => (
+            <Marker
+                key={pin.id}
+                lat={pin.lat}
+                lng={pin.lng}
+                title={pin.title}
+            />
+          ))
         }
       </GoogleMapReact>
       <PinModal 
