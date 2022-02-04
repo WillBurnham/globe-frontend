@@ -31,6 +31,23 @@ const PinDetails = (props) => {
         }
     }
 
+    const handleDeleteClicked = () => {
+        const pin = {
+            title: props.title,
+            description: spotDescription,
+            lat: props.lat,
+            lng: props.lng
+        }
+
+        axios.delete("http://192.168.1.228:8081/pins", pin)
+            .then(
+                props.handleClose()
+            );
+            
+        alert("deleted")
+
+    }
+
     useEffect(() => {
         setSpotDescription(props.description);
     }, [props.description]);
@@ -74,7 +91,7 @@ const PinDetails = (props) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button>Delete</Button>
+                    <Button onClick={handleDeleteClicked}>Delete</Button>
                     <Button style={{marginLeft:"auto"}} onClick={handleUpdateClicked}>Update</Button>
                     <Button onClick={props.handleClose}>Close</Button>
                 </DialogActions>
