@@ -2,26 +2,42 @@ import React, { useEffect, useState } from "react";
 import GoogleMapReact from 'google-map-react';
 import axios from "axios";
 import PinModal from "./Modal";
+import PinDetails from "./Pin-Details";
 import Pin from "./pin.png";
-import styles from "./index.css";
 
 export default function Map(){
 
     const [pins, setPins] = useState([]);
     const [tempPins, setTempPins] = useState([]);
     const [coords, setCoords] = useState([0,0]);
+    const [lat, setLat] = useState(0.0);
+    const [lng, setLng] = useState(0.0);
+    const [description, setDescription] = useState("");
+    const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
+    const [pinDetailsOpen, setPinDetailsOpen] = useState(false);
 
     const handleOpen = () => { setOpen(true) };
     const handleClose = () => { setOpen(false) };
+    const handleOpenPinDetails = () => { setPinDetailsOpen(true) };
+    const handleClosePinDetails = () => { setPinDetailsOpen(false) };
 
-    const handlePinClicked = (e) => {
+    const handlePinClicked = (e, props) => {
+      var latitude = props[0];
+      var longitude = props[1];
+      var desc = props[2];
+      var pinTitle = props[3];
+
+      setLat(latitude);
+      setLng(longitude);
+      setDescription(desc);
+      setTitle(pinTitle);
+
       e.stopPropagation();
-      var obj = {body: "hello"};
-      alert(obj.body);
+      handleOpenPinDetails();
     }
 
-    const Marker = ({ id,lat,lng,title }) => <button onClick={handlePinClicked} style={{backgroundColor:"transparent", border:"none"}}><img src={Pin} height={30} width={30}/></button>;
+    const Marker = ({ id,lat,lng,description,title }) => <button onClick={(e) => {handlePinClicked(e, [lat,lng,description,title])}} style={{backgroundColor:"transparent", border:"none"}}><img src={Pin} alt={title} height={30} width={30}/></button>;
 
     const defaultProps = {
         center: {
@@ -70,6 +86,7 @@ export default function Map(){
                 lat={pin.lat}
                 lng={pin.lng}
                 title={pin.title}
+                description={pin.description}
             />
           ))
         }
@@ -80,6 +97,14 @@ export default function Map(){
         lng={coords[1]}
         handleClose={handleClose}
         parentCallBack={handleModalCallBack}
+      />
+      <PinDetails
+        open={pinDetailsOpen}
+        lat={lat}
+        lng={lng}
+        description={description}
+        title={title}
+        handleClose={handleClosePinDetails}
       />
     </div>
   );
