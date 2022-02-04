@@ -13,7 +13,6 @@ const PinModal = (props) => {
     const [spotDescription, setSpotDescription] = useState("");
 
     const handleSpotNameChange = (e) => { setSpotName(e.target.value); }
-
     const handleSpotDescriptionChange = (e) => { setSpotDescription(e.target.value); }
 
     const placePin = () => {
@@ -24,7 +23,7 @@ const PinModal = (props) => {
             lat: props.lat,
             lng: props.lng
         }
-        console.log(pin);
+
         props.parentCallBack(pin);
         axios.post("http://192.168.1.228:8081/pins", pin)
             .then(
